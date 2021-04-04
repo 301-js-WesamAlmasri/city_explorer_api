@@ -3,6 +3,26 @@
 **Author**: Wesam Al-Masri
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
 
+## Overview
+
+API server which provide data for the City Explorer Application, allowing a user to search for a location, present a Map, as well as interesting information about the area, all using data from APIs that your server will fetch and manage.
+
+## Getting Started
+
+1. Clone the repo using `git clone https://github.com/WesamAlmasri/city_explorer_api.git` for HTTPS or `git@github.com:WesamAlmasri/city_explorer_api.git` for SSH connection
+2. Install all the needs packages by `npm install`
+3. Run the server by entering the command `npm start`
+
+## Architecture
+
+Lnaguage: JavaScript with Node.js
+Frameworks and libraries used: `express`, `cors`,  `dotenv`
+
+## Change Log
+<!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples: -->
+
+04-03-2021 02:30pm - Application now has a fully-functional express server, with a GET route for the location and weather resources .
+
 ---
 
 Number and name of feature: #1 Repository Set Up
