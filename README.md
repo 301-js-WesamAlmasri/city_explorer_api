@@ -17,11 +17,22 @@ Actual time needed to complete: 10 min
 
 ---
 
-Number and name of feature: #1 Repository Set Up
+Number and name of feature: #2 Location
 
-Estimate of time needed to complete: 15 min
+Estimate of time needed to complete: 20 min
 
-Start time: 12: 15
+Start time: 12:35
+
+Finish time: 01:00
+
+Actual time needed to complete: 25 min
+
+---
+Number and name of feature: #3 Weather
+
+Estimate of time needed to complete: 10 min
+
+Start time: 01:05
 
 Finish time: 
 
