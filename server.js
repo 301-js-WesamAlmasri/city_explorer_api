@@ -28,6 +28,7 @@ function Weather( data ) {
 // function to handle location end point
 
 const handleLocation = ( req, res ) => {
+  if( !req.query.city ) throw new Error( 'Sorry, something went wrong' );
   let locationData = require( './data/location.json' );
   let locationObj = new Location( req.query.city, locationData );
 
@@ -44,7 +45,19 @@ const handleWeather = ( req, res ) => {
   res.status( 200 ).send( resultArr );
 };
 
+// function to handle errors
+
+const handleError = ( err, req, res ) => {
+  let response = {
+    status: 500,
+    responseText: err.message,
+  };
+
+  res.status( 500 ).send( response );
+};
+
 app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
+app.use( handleError );
 
 app.listen( PORT, () => console.log( `Listening on port ${PORT}` ) );
