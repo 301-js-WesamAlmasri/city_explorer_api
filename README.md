@@ -34,8 +34,19 @@ Estimate of time needed to complete: 10 min
 
 Start time: 01:05
 
-Finish time: 
+Finish time: 01:15
 
-Actual time needed to complete: 
+Actual time needed to complete: 10 min
+
+---
+Number and name of feature: #4 Errors
+
+Estimate of time needed to complete: 5 min
+
+Start time: 02:20
+
+Finish time: 02:25
+
+Actual time needed to complete: 5 min
 
 ---
