@@ -21,7 +21,7 @@ function Location( query, data ) {
 // weather constructor
 function Weather( data ) {
   this.forecast = data.weather.description;
-  this.time = data.datetime;
+  this.time = new Date( data.datetime ).toString().slice( 0, 15 );
 }
 
 // park constructor
@@ -40,9 +40,8 @@ app.use( handleError );
 
 
 // function to handle location end point
-function handleLocation ( req, res ) {
+function handleLocation ( req, res, next ) {
   let searchQuery = req.query.city;
-  if( !searchQuery ) throw new Error( 'Sorry, something went wrong' );
 
   superagent
     .get( 'https://eu1.locationiq.com/v1/search.php' )
@@ -53,17 +52,13 @@ function handleLocation ( req, res ) {
       let locationObj = new Location( searchQuery, response.body );
       res.status( 200 ).send( locationObj );
     } )
-    .catch( error => handleError( error ) );
+    .catch( next );
 }
 
 // function to handle weather end point
-function handleWeather ( req, res ) {
-  // let searchQuery = req.query.search_query;
-  // let formattedQuery = req.query.formatted_query;
+function handleWeather ( req, res, next ) {
   let latitude = req.query.latitude;
   let longitude = req.query.longitude;
-
-  if( !latitude || !longitude ) throw new Error( 'Sorry, something went wrong' );
 
   superagent
     .get( 'https://api.weatherbit.io/v2.0/forecast/daily' )
@@ -74,35 +69,30 @@ function handleWeather ( req, res ) {
       let resultArr = response.body.data.map( item => new Weather( item ) );
       res.status( 200 ).send( resultArr );
     } )
-    .catch( error => handleError( error ) );
+    .catch( next );
 }
 
 // function to handle park end point
-function handleParks ( req, res ) {
+function handleParks ( req, res, next ) {
   let searchQuery = req.query.search_query;
-  // let formattedQuery = req.query.formatted_query;
-  // let latitude = req.query.latitude;
-  // let longitude = req.query.longitude;
-  // let page = req.query.page;
-
-  if( !searchQuery ) throw new Error( 'Sorry, something went wrong' );
 
   superagent
     .get( 'https://developer.nps.gov/api/v1/parks' )
     .query( { api_key: process.env.PARKS_API_KEY } )
     .query( { q: searchQuery } )
+    .query( { limit: 10 } )
     .then( response => {
       let resultArr = response.body.data.map( item => new Park( item ) );
       res.status( 200 ).send( resultArr );
     } )
-    .catch( error => handleError( error ) );
+    .catch( next );
 }
 
 // function to handle errors
-function handleError ( err, req, res ) {
+function handleError ( err, req, res, next ) {
   let response = {
     status: 500,
-    responseText: err.message,
+    responseText: 'Sorry, something went wrong',
   };
 
   res.status( 500 ).send( response );
