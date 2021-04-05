@@ -3,6 +3,7 @@
 const experss = require( 'express' );
 const cors = require( 'cors' );
 require( 'dotenv' ).config();
+const superagent = require( 'superagent' );
 
 const app = experss();
 app.use( cors() );
@@ -25,39 +26,44 @@ function Weather( data ) {
   this.time = data.datetime;
 }
 
+app.get( '/location' , handleLocation );
+app.get( '/weather' , handleWeather );
+app.use( handleError );
+
+
 // function to handle location end point
+function handleLocation ( req, res ) {
+  let searchQuery = req.query.city;
+  if( !searchQuery ) throw new Error( 'Sorry, something went wrong' );
 
-const handleLocation = ( req, res ) => {
-  if( !req.query.city ) throw new Error( 'Sorry, something went wrong' );
-  let locationData = require( './data/location.json' );
-  let locationObj = new Location( req.query.city, locationData );
-
-  res.status( 200 ).send( locationObj );
-};
+  superagent
+    .get( 'https://eu1.locationiq.com/v1/search.php' )
+    .query( { key: process.env.GEOCODE_API_KEY } )
+    .query( { q: searchQuery } )
+    .query( { format: 'json' } )
+    .then( response => {
+      let locationObj = new Location( searchQuery, response.body );
+      res.status( 200 ).send( locationObj );
+    } );
+}
 
 // function to handle weather end point
-
-const handleWeather = ( req, res ) => {
+function handleWeather ( req, res ) {
   let weatherData = require( './data/weather.json' );
 
-  let resultArr = [];
-  weatherData.data.forEach( item => resultArr.push( new Weather( item ) ) );
+  let resultArr = weatherData.data.map( item => new Weather( item ) );
   res.status( 200 ).send( resultArr );
-};
+}
 
 // function to handle errors
-
-const handleError = ( err, req, res ) => {
+function handleError ( err, req, res ) {
   let response = {
     status: 500,
     responseText: err.message,
   };
 
   res.status( 500 ).send( response );
-};
+}
 
-app.get( '/location' , handleLocation );
-app.get( '/weather' , handleWeather );
-app.use( handleError );
 
 app.listen( PORT, () => console.log( `Listening on port ${PORT}` ) );

@@ -70,3 +70,27 @@ Finish time: 02:25
 Actual time needed to complete: 5 min
 
 ---
+
+Number and name of feature: #5 Data Formatting
+
+Estimate of time needed to complete: 5 min
+
+Start time: 10:20
+
+Finish time: 10:23
+
+Actual time needed to complete: 3 min
+
+---
+
+Number and name of feature: #6 Locations
+
+Estimate of time needed to complete: 15 min
+
+Start time: 10:25
+
+Finish time: 10:50
+
+Actual time needed to complete: 25 min
+
+---
