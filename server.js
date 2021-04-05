@@ -44,15 +44,29 @@ function handleLocation ( req, res ) {
     .then( response => {
       let locationObj = new Location( searchQuery, response.body );
       res.status( 200 ).send( locationObj );
-    } );
+    } )
+    .catch( error => handleError( error ) );
 }
 
 // function to handle weather end point
 function handleWeather ( req, res ) {
-  let weatherData = require( './data/weather.json' );
+  // let searchQuery = req.query.search_query;
+  // let formattedQuery = req.query.formatted_query;
+  let latitude = req.query.latitude;
+  let longitude = req.query.longitude;
 
-  let resultArr = weatherData.data.map( item => new Weather( item ) );
-  res.status( 200 ).send( resultArr );
+  if( !latitude || !longitude ) throw new Error( 'Sorry, something went wrong' );
+
+  superagent
+    .get( 'https://api.weatherbit.io/v2.0/forecast/daily ' )
+    .query( { key: process.env.WEATHER_API_KEY } )
+    .query( { lat: latitude } )
+    .query( { lon: longitude } )
+    .then( response => {
+      let resultArr = response.body.data.map( item => new Weather( item ) );
+      res.status( 200 ).send( resultArr );
+    } )
+    .catch( error => handleError( error ) );
 }
 
 // function to handle errors
