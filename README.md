@@ -97,7 +97,7 @@ Actual time needed to complete: 25 min
 
 ---
 
-Number and name of feature: #6 Weather
+Number and name of feature: #7 Weather
 
 Estimate of time needed to complete: 20 min
 
@@ -106,5 +106,17 @@ Start time: 11:05
 Finish time: 11:30
 
 Actual time needed to complete: 25 min
+
+---
+
+Number and name of feature: #8 Parks
+
+Estimate of time needed to complete: 20 min
+
+Start time: 11:40
+
+Finish time: 12:20
+
+Actual time needed to complete: 40 min
 
 ---
