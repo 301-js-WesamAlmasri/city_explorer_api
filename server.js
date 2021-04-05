@@ -11,7 +11,6 @@ app.use( cors() );
 const PORT = process.env.PORT || 5000;
 
 // location constructor
-
 function Location( query, data ) {
   this.search_query = query;
   this.formatted_query = data[0].display_name;
@@ -20,14 +19,23 @@ function Location( query, data ) {
 }
 
 // weather constructor
-
 function Weather( data ) {
   this.forecast = data.weather.description;
   this.time = data.datetime;
 }
 
+// park constructor
+function Park( data ) {
+  this.name = data.fullName;
+  this.address = Object.values( data.addresses[0] ).join( ', ' );
+  this.fee = data.fees[0] || 0;
+  this.description = data.description;
+  this.url = data.url;
+}
+
 app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
+app.get( '/parks' , handleParks );
 app.use( handleError );
 
 
@@ -58,12 +66,33 @@ function handleWeather ( req, res ) {
   if( !latitude || !longitude ) throw new Error( 'Sorry, something went wrong' );
 
   superagent
-    .get( 'https://api.weatherbit.io/v2.0/forecast/daily ' )
+    .get( 'https://api.weatherbit.io/v2.0/forecast/daily' )
     .query( { key: process.env.WEATHER_API_KEY } )
     .query( { lat: latitude } )
     .query( { lon: longitude } )
     .then( response => {
       let resultArr = response.body.data.map( item => new Weather( item ) );
+      res.status( 200 ).send( resultArr );
+    } )
+    .catch( error => handleError( error ) );
+}
+
+// function to handle park end point
+function handleParks ( req, res ) {
+  let searchQuery = req.query.search_query;
+  // let formattedQuery = req.query.formatted_query;
+  // let latitude = req.query.latitude;
+  // let longitude = req.query.longitude;
+  // let page = req.query.page;
+
+  if( !searchQuery ) throw new Error( 'Sorry, something went wrong' );
+
+  superagent
+    .get( 'https://developer.nps.gov/api/v1/parks' )
+    .query( { api_key: process.env.PARKS_API_KEY } )
+    .query( { q: searchQuery } )
+    .then( response => {
+      let resultArr = response.body.data.map( item => new Park( item ) );
       res.status( 200 ).send( resultArr );
     } )
     .catch( error => handleError( error ) );
