@@ -94,3 +94,17 @@ Finish time: 10:50
 Actual time needed to complete: 25 min
 
 ---
+
+---
+
+Number and name of feature: #6 Weather
+
+Estimate of time needed to complete: 20 min
+
+Start time: 11:05
+
+Finish time: 11:30
+
+Actual time needed to complete: 25 min
+
+---
