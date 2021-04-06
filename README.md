@@ -121,15 +121,26 @@ Actual time needed to complete: 40 min
 
 ---
 
-
 Number and name of feature: #9 Database setup and table creation
 
 Estimate of time needed to complete: 5 min
 
 Start time: 10:00
 
-Finish time:10:03
+Finish time:10:10
 
-Actual time needed to complete: 3 min
+Actual time needed to complete: 10 min
+
+---
+
+Number and name of feature: #9 Database setup and table creation
+
+Estimate of time needed to complete: 30 min
+
+Start time: 10:20
+
+Finish time:
+
+Actual time needed to complete:
 
 ---
