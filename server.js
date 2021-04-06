@@ -19,11 +19,11 @@ const app = experss();
 const PORT = process.env.PORT || 5000;
 
 // location constructor
-function Location( query, data ) {
-  this.search_query = query;
-  this.formatted_query = Array.isArray( data ) ? data[0].display_name : data.formatted_query;
-  this.latitude = Array.isArray( data ) ? data[0].lat : data.latitude;
-  this.longitude = Array.isArray( data ) ? data[0].lon : data.longitude;
+function Location( data ) {
+  this.search_query = data.search_query;
+  this.formatted_query = data.formatted_query;
+  this.latitude = data.latitude;
+  this.longitude = data.longitude;
 }
 
 // weather constructor
@@ -105,12 +105,14 @@ function handleParks ( req, res, next ) {
 function handleError ( err, req, res, next ) {
   console.error( err.stack );
   let response = {
-    status: err.status,
+    status: err.status || 500,
     responseText: err.message,
   };
 
-  res.status( err.status ).send( response );
+  res.status( err.status || 500 ).send( response );
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
 
 // function to ge the location data
 function getLocationData( searchQuery ) {
@@ -120,7 +122,7 @@ function getLocationData( searchQuery ) {
   return client
     .query( query, [searchQuery] )
     .then( dbRespnse => {
-      if( dbRespnse.rowCount > 0 ) return new Location( dbRespnse.rows[0].search_query ,dbRespnse.rows[0] );
+      if( dbRespnse.rowCount > 0 ) return new Location( dbRespnse.rows[0] );
       else {
         return getLocaionInfoFromApi( searchQuery )
           .then( apiResponse => apiResponse )
@@ -138,16 +140,11 @@ function getLocaionInfoFromApi( searchQuery ) {
     .query( { q: searchQuery } )
     .query( { format: 'json' } )
     .then( response => {
-      let locationObj = new Location( searchQuery, response.body );
       let setLocationQuery = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING id, search_query, formatted_query, latitude, longitude;';
-
       return client
-        .query( setLocationQuery, [locationObj.search_query, locationObj.formatted_query, locationObj.latitude, locationObj.longitude] )
+        .query( setLocationQuery, [searchQuery, response.body[0].display_name, response.body[0].lat, response.body[0].lon] )
         .then( insertResponse => {
-          locationObj.search_query = insertResponse.rows[0].search_query;
-          locationObj.formatted_query = insertResponse.rows[0].formatted_query;
-          locationObj.latitude = insertResponse.rows[0].latitude;
-          locationObj.longitude = insertResponse.rows[0].longitude;
+          let locationObj = new Location( insertResponse.rows[0] );
           return locationObj;
         } )
         .catch( e => {throw e;} );
