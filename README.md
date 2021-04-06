@@ -122,3 +122,28 @@ Finish time: 12:20
 Actual time needed to complete: 40 min
 
 ---
+
+Number and name of feature: #9 Database setup and table creation
+
+Estimate of time needed to complete: 5 min
+
+Start time: 10:00
+
+Finish time:10:10
+
+Actual time needed to complete: 10 min
+
+---
+
+Number and name of feature: #10 Persistance of location
+
+Estimate of time needed to complete: 30 min
+
+Start time: 10:20
+
+Finish time: 11:00
+
+Actual time needed to complete: 40 min
+
+---
+

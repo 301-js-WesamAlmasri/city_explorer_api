@@ -4,6 +4,11 @@ const experss = require( 'express' );
 const cors = require( 'cors' );
 require( 'dotenv' ).config();
 const superagent = require( 'superagent' );
+const { Client } = require( 'pg' );
+
+//init pg clinet
+const client = new Client( {connectionString: process.env.DATABASE_URL} );
+client.connect();
 
 const app = experss();
 app.use( cors() );
@@ -13,9 +18,9 @@ const PORT = process.env.PORT || 5000;
 // location constructor
 function Location( query, data ) {
   this.search_query = query;
-  this.formatted_query = data[0].display_name;
-  this.latitude = data[0].lat;
-  this.longitude = data[0].lon;
+  this.formatted_query = Array.isArray( data ) ? data[0].display_name : data.formatted_query;
+  this.latitude = Array.isArray( data ) ? data[0].lat : data.latitude;
+  this.longitude = Array.isArray( data ) ? data[0].lon : data.longitude;
 }
 
 // weather constructor
@@ -33,25 +38,25 @@ function Park( data ) {
   this.url = data.url;
 }
 
+// Routes and middlewares
+app.use( logger );
 app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
 app.get( '/parks' , handleParks );
 app.use( handleError );
 
+// Logger middleware
+function logger( req, res, next ) {
+  console.log( `Time: ${Date.now()}, Requested method: ${req.method}, Requested url: ${req.originalUrl}` );
+  next();
+}
 
 // function to handle location end point
 function handleLocation ( req, res, next ) {
   let searchQuery = req.query.city;
 
-  superagent
-    .get( 'https://eu1.locationiq.com/v1/search.php' )
-    .query( { key: process.env.GEOCODE_API_KEY } )
-    .query( { q: searchQuery } )
-    .query( { format: 'json' } )
-    .then( response => {
-      let locationObj = new Location( searchQuery, response.body );
-      res.status( 200 ).send( locationObj );
-    } )
+  getLocationData( searchQuery, next )
+    .then( response => res.status( 200 ).send( response ) )
     .catch( next );
 }
 
@@ -90,12 +95,57 @@ function handleParks ( req, res, next ) {
 
 // function to handle errors
 function handleError ( err, req, res, next ) {
+  console.log( err.stack );
   let response = {
     status: 500,
     responseText: 'Sorry, something went wrong',
   };
 
   res.status( 500 ).send( response );
+}
+
+// function to ge the location data
+function getLocationData( searchQuery, next ) {
+
+  // checking the database for location information
+  let query = 'SELECT * FROM locations WHERE search_query=$1';
+  return client
+    .query( query, [searchQuery] )
+    .then( dbRespnse => {
+      if( dbRespnse.rowCount > 0 ) return new Location( dbRespnse.rows[0].search_query ,dbRespnse.rows[0] );
+      else {
+        return getLocaionInfoFromApi( searchQuery, next )
+          .then( apiResponse => apiResponse )
+          .catch( next );
+      }
+    } )
+    .catch( next );
+}
+
+// function to get location info from api
+function getLocaionInfoFromApi( searchQuery, next ) {
+  return superagent
+    .get( 'https://eu1.locationiq.com/v1/search.php' )
+    .query( { key: process.env.GEOCODE_API_KEY } )
+    .query( { q: searchQuery } )
+    .query( { format: 'json' } )
+    .then( response => {
+      let locationObj = new Location( searchQuery, response.body );
+      let setLocationQuery = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING id, search_query, formatted_query, latitude, longitude;';
+
+      return client
+        .query( setLocationQuery, [locationObj.search_query, locationObj.formatted_query, locationObj.latitude, locationObj.longitude] )
+        .then( insertResponse => {
+          console.log('insert : ', insertResponse.rows[0])
+          locationObj.search_query = insertResponse.rows[0].search_query;
+          locationObj.formatted_query = insertResponse.rows[0].formatted_query;
+          locationObj.latitude = insertResponse.rows[0].latitude;
+          locationObj.longitude = insertResponse.rows[0].longitude;
+          return locationObj;
+        } )
+        .catch( next );
+    } )
+    .catch( next );
 }
 
 
