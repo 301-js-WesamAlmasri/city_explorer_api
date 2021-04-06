@@ -63,7 +63,7 @@ function logger( req, res, next ) {
 function handleLocation ( req, res, next ) {
   let searchQuery = req.query.city;
 
-  getLocationData( searchQuery, next )
+  getLocationData( searchQuery )
     .then( response => res.status( 200 ).send( response ) )
     .catch( next );
 }
@@ -113,7 +113,7 @@ function handleError ( err, req, res, next ) {
 }
 
 // function to ge the location data
-function getLocationData( searchQuery, next ) {
+function getLocationData( searchQuery ) {
 
   // checking the database for location information
   let query = 'SELECT * FROM locations WHERE search_query=$1';
@@ -122,7 +122,7 @@ function getLocationData( searchQuery, next ) {
     .then( dbRespnse => {
       if( dbRespnse.rowCount > 0 ) return new Location( dbRespnse.rows[0].search_query ,dbRespnse.rows[0] );
       else {
-        return getLocaionInfoFromApi( searchQuery, next )
+        return getLocaionInfoFromApi( searchQuery )
           .then( apiResponse => apiResponse )
           .catch( e => { throw e; } );
       }
@@ -131,7 +131,7 @@ function getLocationData( searchQuery, next ) {
 }
 
 // function to get location info from api
-function getLocaionInfoFromApi( searchQuery, next ) {
+function getLocaionInfoFromApi( searchQuery ) {
   return superagent
     .get( 'https://eu1.locationiq.com/v1/search.php' )
     .query( { key: process.env.GEOCODE_API_KEY } )

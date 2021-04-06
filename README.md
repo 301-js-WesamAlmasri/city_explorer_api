@@ -19,9 +19,10 @@ Lnaguage: JavaScript with Node.js
 Frameworks and libraries used: `express`, `cors`,  `dotenv`
 
 ## Change Log
-<!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples: -->
 
-04-03-2021 02:30pm - Application now has a fully-functional express server, with a GET route for the location and weather resources .
+04-04-2021 02:30pm - Application now has a fully-functional express server, with a GET route for the location and weather resources .
+
+06-04-2021 02:30pm - Application now cach the location information in a database so that when the user enter the same location the server does not need to get the data from the API.
 
 ---
 
