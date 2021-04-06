@@ -8,10 +8,8 @@ const { Client } = require( 'pg' );
 
 //init pg clinet
 const client = new Client( {connectionString: process.env.DATABASE_URL} );
-client.connect();
 
 const app = experss();
-app.use( cors() );
 
 const PORT = process.env.PORT || 5000;
 
@@ -38,11 +36,16 @@ function Park( data ) {
   this.url = data.url;
 }
 
-// Routes and middlewares
+// Middlewares
+app.use( cors() );
 app.use( logger );
+
+// Routes
 app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
 app.get( '/parks' , handleParks );
+
+// Errors handler
 app.use( handleError );
 
 // Logger middleware
@@ -95,13 +98,13 @@ function handleParks ( req, res, next ) {
 
 // function to handle errors
 function handleError ( err, req, res, next ) {
-  console.log( err.stack );
+  console.error( err.stack );
   let response = {
-    status: 500,
-    responseText: 'Sorry, something went wrong',
+    status: err.status,
+    responseText: err.message,
   };
 
-  res.status( 500 ).send( response );
+  res.status( err.status ).send( response );
 }
 
 // function to ge the location data
@@ -116,10 +119,10 @@ function getLocationData( searchQuery, next ) {
       else {
         return getLocaionInfoFromApi( searchQuery, next )
           .then( apiResponse => apiResponse )
-          .catch( next );
+          .catch( e => { throw e; } );
       }
     } )
-    .catch( next );
+    .catch( e => { throw e; } );
 }
 
 // function to get location info from api
@@ -136,17 +139,20 @@ function getLocaionInfoFromApi( searchQuery, next ) {
       return client
         .query( setLocationQuery, [locationObj.search_query, locationObj.formatted_query, locationObj.latitude, locationObj.longitude] )
         .then( insertResponse => {
-          console.log('insert : ', insertResponse.rows[0])
           locationObj.search_query = insertResponse.rows[0].search_query;
           locationObj.formatted_query = insertResponse.rows[0].formatted_query;
           locationObj.latitude = insertResponse.rows[0].latitude;
           locationObj.longitude = insertResponse.rows[0].longitude;
           return locationObj;
         } )
-        .catch( next );
+        .catch( e => {throw e;} );
     } )
-    .catch( next );
+    .catch( e => {throw e;} );
 }
 
-
-app.listen( PORT, () => console.log( `Listening on port ${PORT}` ) );
+// connect to database and start the server
+client.connect()
+  .then( () => {
+    app.listen( PORT, () => console.log( `Listening on port ${PORT}` ) );
+  } )
+  .catch( e => console.log( e ) );

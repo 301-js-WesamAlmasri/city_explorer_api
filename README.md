@@ -147,3 +147,14 @@ Actual time needed to complete: 40 min
 
 ---
 
+Number and name of feature: #11 Deployment
+
+Estimate of time needed to complete: 10 min
+
+Start time: 12:25
+
+Finish time: 12:30
+
+Actual time needed to complete: 5 min
+
+---
