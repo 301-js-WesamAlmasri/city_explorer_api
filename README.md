@@ -15,12 +15,15 @@ API server which provide data for the City Explorer Application, allowing a user
 
 ## Architecture
 
-Lnaguage: JavaScript with Node.js
-Frameworks and libraries used: `express`, `cors`,  `dotenv`
+- Lnaguage: JavaScript with Node.js
+- Frameworks and libraries used: `express`, `cors`,  `dotenv`
+- APIs: Location IQ Geocoding API, Weather Bit API, National Park Service API
 
 ## Change Log
 
 04-04-2021 02:30pm - Application now has a fully-functional express server, with a GET route for the location and weather resources .
+
+05-04-2021 02:30pm - Application now get all data from a remote API, in addition a new router has been added to get parksin specific area .
 
 06-04-2021 02:30pm - Application now cach the location information in a database so that when the user enter the same location the server does not need to get the data from the API.
 
