@@ -7,7 +7,12 @@ const superagent = require( 'superagent' );
 const { Client } = require( 'pg' );
 
 //init pg clinet
-const client = new Client( {connectionString: process.env.DATABASE_URL} );
+const client = new Client( {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+} );
 
 const app = experss();
 
@@ -151,8 +156,10 @@ function getLocaionInfoFromApi( searchQuery, next ) {
 }
 
 // connect to database and start the server
-client.connect()
+client
+  .connect()
   .then( () => {
     app.listen( PORT, () => console.log( `Listening on port ${PORT}` ) );
   } )
   .catch( e => console.log( e ) );
+
