@@ -9,9 +9,9 @@ const { Client } = require( 'pg' );
 //init pg clinet
 const client = new Client( {
   connectionString: process.env.DATABASE_URL,
-  // ssl: {
-  //   rejectUnauthorized: false
-  // }
+  ssl: {
+    rejectUnauthorized: false
+  }
 } );
 
 const app = experss();
@@ -52,6 +52,15 @@ function Movie( data ) {
   this.released_on = data.release_date;
 }
 
+// restaurant constructor
+function Restaurant( data ) {
+  this.name = data.name;
+  this.image_url = data.image_url;
+  this.price = data.price;
+  this.rating = data.rating;
+  this.url = data.url;
+}
+
 // Middlewares
 app.use( cors() );
 app.use( logger );
@@ -61,6 +70,7 @@ app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
 app.get( '/parks' , handleParks );
 app.get( '/movies' , handleMovies );
+app.get( '/yelp' , handleYelp );
 
 // Errors handler
 app.use( handleError );
@@ -113,7 +123,7 @@ function handleParks ( req, res, next ) {
     .catch( next );
 }
 
-// function to movies end point
+// function to handle movies end point
 function handleMovies ( req, res, next ) {
   let searchQuery = req.query.search_query;
 
@@ -123,6 +133,21 @@ function handleMovies ( req, res, next ) {
     .query( { query: searchQuery } )
     .then( response => {
       let resultArr = response.body.results.splice( 0, 10 ).map( item => new Movie( item ) );
+      res.status( 200 ).send( resultArr );
+    } )
+    .catch( next );
+}
+
+// function to handle yelp end point
+function handleYelp ( req, res, next ) {
+  let searchQuery = req.query.search_query;
+
+  superagent
+    .get( 'https://api.yelp.com/v3/businesses/search' )
+    .set( 'Authorization', `Bearer ${process.env.YELP_API_KEY}` )
+    .query( { location: searchQuery } )
+    .then( response => {
+      let resultArr = response.body.businesses.map( item => new Restaurant( item ) );
       res.status( 200 ).send( resultArr );
     } )
     .catch( next );
