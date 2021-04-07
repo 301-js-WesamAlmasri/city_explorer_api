@@ -27,6 +27,8 @@ API server which provide data for the City Explorer Application, allowing a user
 
 06-04-2021 02:30pm - Application now cach the location information in a database so that when the user enter the same location the server does not need to get the data from the API.
 
+07-04-2021 12:20pm - Application now has a new routers to get movies for a specific area and a router to get a paginated list of resturants in an area.
+
 ---
 
 Number and name of feature: #1 Repository Set Up
@@ -172,6 +174,18 @@ Start time: 11:50
 Finish time: 12:05
 
 Actual time needed to complete: 15 min
+
+---
+
+Number and name of feature: #12 Pagination
+
+Estimate of time needed to complete: 15 min
+
+Start time: 12:15
+
+Finish time: 12:20
+
+Actual time needed to complete: 5 min
 
 ---
 
