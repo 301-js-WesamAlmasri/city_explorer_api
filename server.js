@@ -141,11 +141,15 @@ function handleMovies ( req, res, next ) {
 // function to handle yelp end point
 function handleYelp ( req, res, next ) {
   let searchQuery = req.query.search_query;
+  let pageNumber = req.query.page;
+  let startWith = ( ( pageNumber - 1 ) * 5 + 1 );
 
   superagent
     .get( 'https://api.yelp.com/v3/businesses/search' )
     .set( 'Authorization', `Bearer ${process.env.YELP_API_KEY}` )
     .query( { location: searchQuery } )
+    .query( { limit: 5 } )
+    .query( { offset: startWith } )
     .then( response => {
       let resultArr = response.body.businesses.map( item => new Restaurant( item ) );
       res.status( 200 ).send( resultArr );
