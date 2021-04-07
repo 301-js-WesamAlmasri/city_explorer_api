@@ -149,6 +149,18 @@ Actual time needed to complete: 40 min
 
 ---
 
+Number and name of feature: #11 Movies
+
+Estimate of time needed to complete: 20 min
+
+Start time: 10:40
+
+Finish time: 
+
+Actual time needed to complete: 
+
+---
+
 Number and name of feature: #11 Deployment
 
 Estimate of time needed to complete: 10 min

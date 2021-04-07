@@ -9,9 +9,9 @@ const { Client } = require( 'pg' );
 //init pg clinet
 const client = new Client( {
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  // ssl: {
+  //   rejectUnauthorized: false
+  // }
 } );
 
 const app = experss();
@@ -41,6 +41,17 @@ function Park( data ) {
   this.url = data.url;
 }
 
+// movie constructor
+function Movie( data ) {
+  this.title = data.title;
+  this.overview = data.overview;
+  this.average_votes = data.vote_average;
+  this.total_votes = data.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+  this.popularity = data.popularity;
+  this.released_on = data.release_date;
+}
+
 // Middlewares
 app.use( cors() );
 app.use( logger );
@@ -49,6 +60,7 @@ app.use( logger );
 app.get( '/location' , handleLocation );
 app.get( '/weather' , handleWeather );
 app.get( '/parks' , handleParks );
+app.get( '/movies' , handleMovies );
 
 // Errors handler
 app.use( handleError );
@@ -96,6 +108,21 @@ function handleParks ( req, res, next ) {
     .query( { limit: 10 } )
     .then( response => {
       let resultArr = response.body.data.map( item => new Park( item ) );
+      res.status( 200 ).send( resultArr );
+    } )
+    .catch( next );
+}
+
+// function to movies end point
+function handleMovies ( req, res, next ) {
+  let searchQuery = req.query.search_query;
+
+  superagent
+    .get( 'https://api.themoviedb.org/3/search/multi' )
+    .query( { api_key: process.env.MOVIE_API_KEY } )
+    .query( { query: searchQuery } )
+    .then( response => {
+      let resultArr = response.body.results.splice( 0, 10 ).map( item => new Movie( item ) );
       res.status( 200 ).send( resultArr );
     } )
     .catch( next );
