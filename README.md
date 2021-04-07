@@ -155,9 +155,23 @@ Estimate of time needed to complete: 20 min
 
 Start time: 10:40
 
-Finish time: 
+Finish time: 11:45
 
-Actual time needed to complete: 
+Actual time needed to complete: 1 hour
+
+---
+
+---
+
+Number and name of feature: #12 Yelp
+
+Estimate of time needed to complete: 20 min
+
+Start time: 11:50
+
+Finish time: 12:05
+
+Actual time needed to complete: 15 min
 
 ---
 
