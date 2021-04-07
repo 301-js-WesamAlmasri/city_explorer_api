@@ -2,10 +2,10 @@
   "name": "city_explorer_api",
   "version": "1.0.0",
   "description": "Application to get information about a city that the user search on",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
