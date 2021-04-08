@@ -17,7 +17,8 @@ API server which provide data for the City Explorer Application, allowing a user
 
 - Lnaguage: JavaScript with Node.js
 - Frameworks and libraries used: `express`, `cors`,  `dotenv`
-- APIs: Location IQ Geocoding API, Weather Bit API, National Park Service API
+- APIs: Location IQ Geocoding API, Weather Bit API, National Park Service API, Yelp API, 
+The Movie Database (TMDb) API
 
 ## Change Log
 
