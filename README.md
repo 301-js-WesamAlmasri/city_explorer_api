@@ -5,7 +5,7 @@
 
 ## Overview
 
-API server which provide data for the City Explorer Application, allowing a user to search for a location, present a Map, as well as interesting information about the area, all using data from APIs that your server will fetch and manage.
+API server which provide data for the City Explorer Application, allowing a user to search for a location, present a Map, as well as interesting information about the area, all using data from APIs that the server will fetch and manage.
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ API server which provide data for the City Explorer Application, allowing a user
 ## Architecture
 
 - Lnaguage: JavaScript with Node.js
-- Frameworks and libraries used: `express`, `cors`,  `dotenv`
+- Frameworks and libraries used: `express`, `cors`,  `dotenv`, `superagent`, `pg`
 - APIs: Location IQ Geocoding API, Weather Bit API, National Park Service API, Yelp API, 
 The Movie Database (TMDb) API
 
