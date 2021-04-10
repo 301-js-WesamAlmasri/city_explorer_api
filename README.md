@@ -42,7 +42,7 @@ The response will be like this
 
 | Method | Endpint                | Description                                                                                     |
 | ------ | ---------------------- | ----------------------------------------------------------------------------------------------- |
-| GET    | /weather?search_query= | Get the  weather forecast for the upcoming days for specific area by the latitude and longitude |
+| GET    | /weather?latitude=&longitude= | Get the  weather forecast for the upcoming days for specific area by the latitude and longitude |
 
 **Response:**
 
